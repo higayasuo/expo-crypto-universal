@@ -1,0 +1,28 @@
+# Source
+src/
+__tests__/
+
+# Development
+.git/
+.gitignore
+.npmignore
+.eslintrc
+.prettierrc
+tsconfig.json
+vite.config.ts
+vitest.config.ts
+
+# Testing
+coverage/
+*.tgz
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Misc
+.DS_Store
+.env*
+*.pem
