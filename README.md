@@ -16,9 +16,13 @@ A universal crypto implementation for Expo that works across all platforms, incl
 ## Installation
 
 ```bash
+# Install the main package
 npm install expo-crypto-universal
 # or
 yarn add expo-crypto-universal
+
+# Install required Expo module
+npx expo install expo-crypto
 ```
 
 ### Dependencies
