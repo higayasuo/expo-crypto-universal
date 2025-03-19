@@ -26,3 +26,6 @@ coverage/
 .DS_Store
 .env*
 *.pem
+
+# npm pack
+*.tgz

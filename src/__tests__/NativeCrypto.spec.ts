@@ -15,6 +15,53 @@ vi.mock('expo-crypto', () => ({
   },
 }));
 
+// Helper function to encrypt using Node.js crypto module with AES-CBC and HMAC
+async function nodeAesEncrypt(
+  data: Uint8Array,
+  key: Uint8Array,
+): Promise<Uint8Array> {
+  const iv = crypto.randomBytes(16);
+  const hmacKey = crypto.randomBytes(32);
+
+  // Encrypt data
+  const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+  const encrypted = Buffer.concat([cipher.update(data), cipher.final()]);
+
+  // Combine IV, HMAC key, and encrypted data
+  const encryptedData = Buffer.concat([iv, hmacKey, encrypted]);
+
+  // Generate HMAC (full 32 bytes)
+  const hmac = crypto.createHmac('sha256', hmacKey);
+  hmac.update(encryptedData);
+  const fullHmac = hmac.digest();
+
+  return Buffer.concat([encryptedData, fullHmac]);
+}
+
+// Helper function to decrypt using Node.js crypto module with AES-CBC and HMAC
+async function nodeAesDecrypt(
+  data: Uint8Array,
+  key: Uint8Array,
+): Promise<Uint8Array> {
+  const iv = data.slice(0, 16);
+  const hmacKey = data.slice(16, 48);
+  const encrypted = data.slice(48, -32);
+  const receivedHmac = data.slice(-32);
+
+  // Verify HMAC
+  const hmac = crypto.createHmac('sha256', hmacKey);
+  hmac.update(data.slice(0, -32));
+  const calculatedHmac = hmac.digest();
+
+  if (!calculatedHmac.equals(receivedHmac)) {
+    throw new Error('Invalid HMAC');
+  }
+
+  // Decrypt data
+  const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+  return Buffer.concat([decipher.update(encrypted), decipher.final()]);
+}
+
 describe('NativeCrypto', () => {
   let nativeCrypto: NativeCrypto;
   let mockRandomValues: Uint8Array;
@@ -30,6 +77,33 @@ describe('NativeCrypto', () => {
   });
 
   describe('AES-CBC encryption/decryption with HMAC', () => {
+    it('should produce compatible results with Node.js crypto implementation', async () => {
+      const key = new Uint8Array(32).fill(2); // 32-byte key filled with 2s
+      const testData = new Uint8Array([1, 2, 3, 4, 5]);
+
+      // Test cross-implementation encryption/decryption
+      const encryptedNative = await nativeCrypto.aesEncryptAsync(testData, key);
+      const decryptedNode = await nodeAesDecrypt(encryptedNative, key);
+      expect(Array.from(decryptedNode)).toEqual(Array.from(testData));
+
+      const encryptedNode = await nodeAesEncrypt(testData, key);
+      const decryptedNative = await nativeCrypto.aesDecryptAsync(
+        encryptedNode,
+        key,
+      );
+      expect(Array.from(decryptedNative)).toEqual(Array.from(testData));
+
+      // Verify both implementations can decrypt their own output
+      const decryptedNative2 = await nativeCrypto.aesDecryptAsync(
+        encryptedNative,
+        key,
+      );
+      expect(Array.from(decryptedNative2)).toEqual(Array.from(testData));
+
+      const decryptedNode2 = await nodeAesDecrypt(encryptedNode, key);
+      expect(Array.from(decryptedNode2)).toEqual(Array.from(testData));
+    });
+
     it('should encrypt and decrypt data correctly', async () => {
       const key = new Uint8Array(32).fill(2); // 32-byte key filled with 2s
       const testData = new Uint8Array([1, 2, 3, 4, 5]);

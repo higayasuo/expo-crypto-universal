@@ -4,7 +4,10 @@
  * @param b Second array
  * @returns true if arrays are equal, false otherwise
  */
-export function compareUint8Arrays(a: Uint8Array, b: Uint8Array): boolean {
-  if (a.length !== b.length) return false;
+export const compareUint8Arrays = (a: Uint8Array, b: Uint8Array): boolean => {
+  if (a.length !== b.length) {
+    return false;
+  }
+
   return a.every((val, i) => val === b[i]);
-}
+};

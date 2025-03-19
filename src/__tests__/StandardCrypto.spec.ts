@@ -53,6 +53,37 @@ describe('StandardCrypto', () => {
   const standardCrypto = new StandardCrypto();
 
   describe('AES-CBC encryption/decryption with HMAC', () => {
+    it('should produce compatible results with Node.js crypto implementation', async () => {
+      const key = crypto.randomBytes(32);
+      const testData = new Uint8Array([1, 2, 3, 4, 5]);
+
+      // Test cross-implementation encryption/decryption
+      const encryptedStandard = await standardCrypto.aesEncryptAsync(
+        testData,
+        key,
+      );
+      const decryptedNode = await nodeAesDecrypt(encryptedStandard, key);
+      expect(Array.from(decryptedNode)).toEqual(Array.from(testData));
+
+      const encryptedNode = await nodeAesEncrypt(testData, key);
+      const decryptedStandard = await standardCrypto.aesDecryptAsync(
+        encryptedNode,
+        key,
+      );
+      expect(Array.from(decryptedStandard)).toEqual(Array.from(testData));
+      expect(Array.from(decryptedNode)).toEqual(Array.from(testData));
+
+      // Verify both implementations can decrypt their own output
+      const decryptedStandard2 = await standardCrypto.aesDecryptAsync(
+        encryptedStandard,
+        key,
+      );
+      expect(Array.from(decryptedStandard2)).toEqual(Array.from(testData));
+
+      const decryptedNode2 = await nodeAesDecrypt(encryptedNode, key);
+      expect(Array.from(decryptedNode2)).toEqual(Array.from(testData));
+    });
+
     it('should encrypt and decrypt binary data correctly', async () => {
       const key = crypto.randomBytes(32);
       const testData = new Uint8Array([1, 2, 3, 4, 5]);

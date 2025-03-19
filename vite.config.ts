@@ -23,8 +23,4 @@ export default defineConfig({
       include: ['src/**/*.ts'],
     }),
   ],
-  test: {
-    globals: true,
-    environment: 'node',
-  },
 });
