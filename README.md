@@ -1,17 +1,15 @@
 # expo-crypto-universal
 
-A universal crypto implementation for Expo that works across all platforms, including web. This package extends `expo-crypto` functionality by providing a consistent interface that works on web platforms and automatically switches implementations based on the platform. AES-CBC-HMAC implementation that works with Expo Go is also available.
+A universal crypto implementation for Expo that works across all platforms, including web. This package provides a consistent interface for crypto operations that can be implemented differently based on the platform.
 
 ## Features
 
-- Works on all platforms (iOS, Android, and Web)
-- AES-256-CBC encryption with HMAC-SHA256 authentication
-- Automatic platform detection and implementation switching
-- Uses `expo-crypto` on native platforms
-- Uses Web Crypto API on web platforms
+- Platform-agnostic crypto interface
+- AES encryption/decryption
+- SHA-256 hashing
+- Secure random bytes generation
 - TypeScript support
-- Comprehensive test suite
-- Compatible with Expo Go
+- Utility functions for Uint8Array operations
 
 ## Installation
 
@@ -35,86 +33,113 @@ This package requires the following peer dependencies:
 ## Usage
 
 ```typescript
-import { platformCrypto } from 'expo-crypto-universal';
+import { CryptoModule } from 'expo-crypto-universal';
+import { compareUint8Arrays } from 'expo-crypto-universal';
+
+// Implement the CryptoModule interface for your platform
+class MyCryptoImplementation implements CryptoModule {
+  getRandomBytes(size: number): Uint8Array {
+    // Implement platform-specific random bytes generation
+  }
+
+  async sha256Async(code: string): Promise<string> {
+    // Implement platform-specific SHA-256 hashing
+  }
+
+  async aesEncryptAsync(
+    data: Uint8Array,
+    rawKey: Uint8Array,
+  ): Promise<Uint8Array> {
+    // Implement platform-specific AES encryption
+  }
+
+  async aesDecryptAsync(
+    data: Uint8Array,
+    rawKey: Uint8Array,
+  ): Promise<Uint8Array> {
+    // Implement platform-specific AES decryption
+  }
+}
+
+// Use the implementation
+const crypto = new MyCryptoImplementation();
 
 // Generate random bytes
-const randomBytes = platformCrypto.getRandomBytes(32);
+const randomBytes = crypto.getRandomBytes(32);
 
 // Generate SHA-256 hash
-const hash = await platformCrypto.sha256Async('Hello, World!');
+const hash = await crypto.sha256Async('Hello, World!');
 
 // Encrypt data
-const key = platformCrypto.getRandomBytes(32);
+const key = crypto.getRandomBytes(32);
 const data = new TextEncoder().encode('Secret message');
-const encrypted = await platformCrypto.aesEncryptAsync(data, key);
+const encrypted = await crypto.aesEncryptAsync(data, key);
 
 // Decrypt data
-const decrypted = await platformCrypto.aesDecryptAsync(encrypted, key);
+const decrypted = await crypto.aesDecryptAsync(encrypted, key);
 const message = new TextDecoder().decode(decrypted);
 console.log(message); // 'Secret message'
+
+// Compare Uint8Arrays
+const areEqual = compareUint8Arrays(data, decrypted);
 ```
 
 ## API
 
+### `CryptoModule` Interface
+
+The package exports a `CryptoModule` interface that defines the contract for crypto implementations:
+
+```typescript
+interface CryptoModule {
+  getRandomBytes(size: number): Uint8Array;
+  sha256Async(code: string): Promise<string>;
+  aesEncryptAsync(data: Uint8Array, key: Uint8Array): Promise<Uint8Array>;
+  aesDecryptAsync(data: Uint8Array, key: Uint8Array): Promise<Uint8Array>;
+}
+```
+
 ### `getRandomBytes(size: number): Uint8Array`
 
 Generates cryptographically secure random bytes.
-- On native platforms: Uses `expo-crypto.getRandomBytes`
-- On web: Uses `crypto.getRandomValues`
 
 ### `sha256Async(code: string): Promise<string>`
 
 Generates a SHA-256 hash of the input string, returned as a base64-encoded string.
-- On native platforms: Uses `expo-crypto.digestStringAsync`
-- On web: Uses `crypto.subtle.digest`
 
 ### `aesEncryptAsync(data: Uint8Array, key: Uint8Array): Promise<Uint8Array>`
 
-Encrypts data using AES-256-CBC with HMAC-SHA256 authentication.
+Encrypts data using AES.
 
 - `data`: The data to encrypt
-- `key`: 32-byte encryption key
-- Returns: Encrypted data in format: [IV (16 bytes)][HMAC_KEY (32 bytes)][encrypted data][HMAC (32 bytes)]
-- On native platforms: Uses `crypto-js` for AES-CBC and HMAC
-- On web: Uses Web Crypto API for AES-CBC and HMAC
+- `key`: The encryption key
+- Returns: Encrypted data with IV prepended
 
 ### `aesDecryptAsync(encrypted: Uint8Array, key: Uint8Array): Promise<Uint8Array>`
 
-Decrypts AES-encrypted data.
+Decrypts AES encrypted data.
 
-- `encrypted`: The encrypted data (including IV, HMAC key, and HMAC)
-- `key`: 32-byte encryption key
+- `encrypted`: The encrypted data (including IV)
+- `key`: The decryption key
 - Returns: Decrypted data
-- Throws: If HMAC verification fails or decryption fails
-- On native platforms: Uses `crypto-js` for AES-CBC and HMAC
-- On web: Uses Web Crypto API for AES-CBC and HMAC
 
-## Platform-specific Implementation
+### `uint8ArrayUtils`
 
-The library automatically selects the appropriate implementation based on the platform:
+The package includes utility functions for working with Uint8Arrays:
 
 ```typescript
-// platformCrypto.ts
-export const platformCrypto: CryptoModule = Platform.OS === 'web' ? standardCrypto : nativeCrypto;
+function compareUint8Arrays(a: Uint8Array, b: Uint8Array): boolean;
 ```
 
-### Native Implementation (iOS/Android)
-- Uses `expo-crypto` for random bytes and SHA-256
-- Uses `crypto-js` for AES-CBC encryption/decryption
-- Implements HMAC-SHA256 for authentication
-
-### Web Implementation
-- Uses Web Crypto API (`crypto.subtle`) for all operations
-- Provides identical security guarantees as native implementation
+Compares two Uint8Arrays for equality, checking both length and content.
 
 ## Security
 
-This implementation uses:
-- AES-256-CBC for encryption
-- HMAC-SHA256 for authentication (Encrypt-then-MAC)
-- Secure random IV (16 bytes) generation
-- Secure HMAC key (32 bytes) generation
-- Full HMAC verification before decryption
+This interface supports:
+
+- AES encryption/decryption
+- SHA-256 for hashing
+- Cryptographically secure random bytes generation
 
 ## Testing with Other Projects
 
@@ -122,12 +147,15 @@ To test this package with another project locally:
 
 1. Clone this repository
 2. Build and pack the package:
+
 ```bash
 npm install
 npm run pack-local
 ```
+
 3. This will create a file like `expo-crypto-universal-0.1.0.tgz`
 4. In your test project, install the local package:
+
 ```bash
 npm install /path/to/expo-crypto-universal-0.1.0.tgz
 ```
