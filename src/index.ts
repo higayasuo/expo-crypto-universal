@@ -1,2 +1,5 @@
+export * from './AbstractCryptoModule';
 export * from './CryptoModule';
-export * from './uint8ArrayUtils';
+export * from './getCryptoModule';
+export * from './NativeCryptoModule';
+export * from './WebCryptoModule';

@@ -11,16 +11,22 @@ export default defineConfig({
       formats: ['es', 'cjs'],
     },
     rollupOptions: {
-      external: [
-        'expo-crypto',
-        'react-native'
-      ]
+      external: ['expo-crypto'],
+      input: {
+        main: resolve(__dirname, 'src/index.ts'),
+      },
+      output: {
+        globals: {
+          'expo-crypto': 'expoCrypto',
+        },
+      },
     },
   },
   plugins: [
     dts({
       rollupTypes: true,
       include: ['src/**/*.ts'],
+      exclude: ['src/__tests__/**/*.ts', '**/*.spec.ts', '**/*.test.ts'],
     }),
   ],
 });

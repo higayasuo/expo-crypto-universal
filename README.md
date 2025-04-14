@@ -5,11 +5,10 @@ A universal crypto implementation for Expo that works across all platforms, incl
 ## Features
 
 - Platform-agnostic crypto interface
-- AES encryption/decryption
-- SHA-256 hashing
+- SHA-2 hashing (256, 384, 512 bits)
 - Secure random bytes generation
 - TypeScript support
-- Utility functions for Uint8Array operations
+- Automatic platform detection and module selection
 
 ## Installation
 
@@ -28,63 +27,37 @@ npx expo install expo-crypto
 This package requires the following peer dependencies:
 
 - `expo-crypto`
-- `react-native`
 
 ## Usage
 
 ```typescript
-import { CryptoModule } from 'expo-crypto-universal';
-import { compareUint8Arrays } from 'expo-crypto-universal';
+import { getCryptoModule } from 'expo-crypto-universal';
 
-// Implement the CryptoModule interface for your platform
-class MyCryptoImplementation implements CryptoModule {
-  getRandomBytes(size: number): Uint8Array {
-    // Implement platform-specific random bytes generation
-  }
-
-  async sha256Async(code: string): Promise<string> {
-    // Implement platform-specific SHA-256 hashing
-  }
-
-  async aesEncryptAsync(
-    data: Uint8Array,
-    rawKey: Uint8Array,
-  ): Promise<Uint8Array> {
-    // Implement platform-specific AES encryption
-  }
-
-  async aesDecryptAsync(
-    data: Uint8Array,
-    rawKey: Uint8Array,
-  ): Promise<Uint8Array> {
-    // Implement platform-specific AES decryption
-  }
-}
-
-// Use the implementation
-const crypto = new MyCryptoImplementation();
+// Get the appropriate crypto module for your platform
+const crypto = getCryptoModule();
 
 // Generate random bytes
 const randomBytes = crypto.getRandomBytes(32);
 
 // Generate SHA-256 hash
-const hash = await crypto.sha256Async('Hello, World!');
+const data = new TextEncoder().encode('Hello, World!');
+const hash256 = await crypto.sha256Async(data);
 
-// Encrypt data
-const key = crypto.getRandomBytes(32);
-const data = new TextEncoder().encode('Secret message');
-const encrypted = await crypto.aesEncryptAsync(data, key);
+// Generate SHA-384 hash
+const hash384 = await crypto.sha384Async(data);
 
-// Decrypt data
-const decrypted = await crypto.aesDecryptAsync(encrypted, key);
-const message = new TextDecoder().decode(decrypted);
-console.log(message); // 'Secret message'
+// Generate SHA-512 hash
+const hash512 = await crypto.sha512Async(data);
 
-// Compare Uint8Arrays
-const areEqual = compareUint8Arrays(data, decrypted);
+// Or use the generic SHA-2 method
+const hash = await crypto.sha2Async(256, data); // Same as sha256Async
 ```
 
 ## API
+
+### `getCryptoModule()`
+
+Returns the appropriate `CryptoModule` implementation based on the current platform.
 
 ### `CryptoModule` Interface
 
@@ -92,54 +65,45 @@ The package exports a `CryptoModule` interface that defines the contract for cry
 
 ```typescript
 interface CryptoModule {
+  getRandomValues(values: Uint8Array): Uint8Array;
   getRandomBytes(size: number): Uint8Array;
-  sha256Async(code: string): Promise<string>;
-  aesEncryptAsync(data: Uint8Array, key: Uint8Array): Promise<Uint8Array>;
-  aesDecryptAsync(data: Uint8Array, key: Uint8Array): Promise<Uint8Array>;
+  sha256Async(data: Uint8Array): Promise<Uint8Array>;
+  sha384Async(data: Uint8Array): Promise<Uint8Array>;
+  sha512Async(data: Uint8Array): Promise<Uint8Array>;
+  sha2Async(bits: number, data: Uint8Array): Promise<Uint8Array>;
 }
 ```
 
+### `getRandomValues(values: Uint8Array): Uint8Array`
+
+Fills the provided Uint8Array with cryptographically secure random values.
+
 ### `getRandomBytes(size: number): Uint8Array`
 
-Generates cryptographically secure random bytes.
+Generates a new Uint8Array of specified size filled with cryptographically secure random bytes.
 
-### `sha256Async(code: string): Promise<string>`
+### `sha256Async(data: Uint8Array): Promise<Uint8Array>`
 
-Generates a SHA-256 hash of the input string, returned as a base64-encoded string.
+Computes the SHA-256 hash of the input data.
 
-### `aesEncryptAsync(data: Uint8Array, key: Uint8Array): Promise<Uint8Array>`
+### `sha384Async(data: Uint8Array): Promise<Uint8Array>`
 
-Encrypts data using AES.
+Computes the SHA-384 hash of the input data.
 
-- `data`: The data to encrypt
-- `key`: The encryption key
-- Returns: Encrypted data with IV prepended
+### `sha512Async(data: Uint8Array): Promise<Uint8Array>`
 
-### `aesDecryptAsync(encrypted: Uint8Array, key: Uint8Array): Promise<Uint8Array>`
+Computes the SHA-512 hash of the input data.
 
-Decrypts AES encrypted data.
+### `sha2Async(bits: number, data: Uint8Array): Promise<Uint8Array>`
 
-- `encrypted`: The encrypted data (including IV)
-- `key`: The decryption key
-- Returns: Decrypted data
+Computes the SHA-2 hash of the input data with the specified number of bits (256, 384, or 512).
 
-### `uint8ArrayUtils`
+## Platform Support
 
-The package includes utility functions for working with Uint8Arrays:
+The package automatically selects the appropriate implementation based on the platform:
 
-```typescript
-function compareUint8Arrays(a: Uint8Array, b: Uint8Array): boolean;
-```
-
-Compares two Uint8Arrays for equality, checking both length and content.
-
-## Security
-
-This interface supports:
-
-- AES encryption/decryption
-- SHA-256 for hashing
-- Cryptographically secure random bytes generation
+- Web: Uses the Web Crypto API
+- Native (iOS/Android): Uses Expo's native crypto implementation
 
 ## Testing with Other Projects
 
@@ -153,11 +117,11 @@ npm install
 npm run pack-local
 ```
 
-3. This will create a file like `expo-crypto-universal-0.1.0.tgz`
+3. This will create a file like `expo-crypto-universal-0.2.2.tgz`
 4. In your test project, install the local package:
 
 ```bash
-npm install /path/to/expo-crypto-universal-0.1.0.tgz
+npm install /path/to/expo-crypto-universal-0.2.2.tgz
 ```
 
 ## License

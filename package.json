@@ -1,6 +1,6 @@
 {
   "name": "expo-crypto-universal",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Universal crypto implementation for Expo that works across all platforms including web",
   "private": false,
   "type": "module",
@@ -42,20 +42,16 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "crypto-js": "^4.2.0",
     "base64-js": "^1.5.1"
   },
   "devDependencies": {
-    "@types/crypto-js": "^4.2.2",
     "@types/node": "^20.11.24",
-    "@types/react-native": "^0.73.0",
     "typescript": "^5.2.2",
     "vite": "^5.1.4",
     "vite-plugin-dts": "^3.7.3",
     "vitest": "^1.3.1"
   },
   "peerDependencies": {
-    "expo-crypto": "*",
-    "react-native": "*"
+    "expo-crypto": "*"
   }
 }

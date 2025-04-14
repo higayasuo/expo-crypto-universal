@@ -3,6 +3,12 @@
  */
 export interface CryptoModule {
   /**
+   * Fills the passed Uint8Array with cryptographically secure random values
+   * @param values - The Uint8Array to fill with random values
+   * @returns The same Uint8Array filled with random values
+   */
+  getRandomValues(values: Uint8Array): Uint8Array;
+  /**
    * Generates random bytes of specified size
    * @param size - The number of random bytes to generate
    * @returns Uint8Array containing random bytes
@@ -10,25 +16,31 @@ export interface CryptoModule {
   getRandomBytes(size: number): Uint8Array;
 
   /**
-   * Computes SHA-256 hash of the input string and returns it as base64 encoded string
-   * @param code - The input string to hash
-   * @returns Promise resolving to base64 encoded SHA-256 hash
+   * Computes the SHA-256 hash of the given data asynchronously
+   * @param data - The data to hash as a Uint8Array
+   * @returns Promise resolving to a Uint8Array containing the SHA-256 hash
    */
-  sha256Async(code: string): Promise<string>;
+  sha256Async(data: Uint8Array): Promise<Uint8Array>;
 
   /**
-   * Encrypts data using AES-GCM
-   * @param data - The data to encrypt as bytes
-   * @param rawKey - The encryption key as bytes
-   * @returns Promise resolving to encrypted bytes with IV prepended
+   * Computes the SHA-384 hash of the given data asynchronously
+   * @param data - The data to hash as a Uint8Array
+   * @returns Promise resolving to a Uint8Array containing the SHA-384 hash
    */
-  aesEncryptAsync(data: Uint8Array, rawKey: Uint8Array): Promise<Uint8Array>;
+  sha384Async(data: Uint8Array): Promise<Uint8Array>;
 
   /**
-   * Decrypts AES-GCM encrypted data
-   * @param data - The encrypted data as bytes (including IV)
-   * @param rawKey - The decryption key as bytes
-   * @returns Promise resolving to decrypted bytes
+   * Computes the SHA-512 hash of the given data asynchronously
+   * @param data - The data to hash as a Uint8Array
+   * @returns Promise resolving to a Uint8Array containing the SHA-512 hash
    */
-  aesDecryptAsync(data: Uint8Array, rawKey: Uint8Array): Promise<Uint8Array>;
+  sha512Async(data: Uint8Array): Promise<Uint8Array>;
+
+  /**
+   * Computes the SHA-2 hash of the given data asynchronously
+   * @param bits - The number of bits to use (256, 384, or 512)
+   * @param data - The data to hash as a Uint8Array
+   * @returns Promise resolving to a Uint8Array containing the SHA-2 hash
+   */
+  sha2Async(bits: number, data: Uint8Array): Promise<Uint8Array>;
 }
