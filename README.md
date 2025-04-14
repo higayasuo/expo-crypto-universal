@@ -105,24 +105,24 @@ The package automatically selects the appropriate implementation based on the pl
 - Web: Uses the Web Crypto API
 - Native (iOS/Android): Uses Expo's native crypto implementation
 
-## Testing with Other Projects
+## Testing
 
-To test this package with another project locally:
+When testing with Vitest, you may encounter the following error:
 
-1. Clone this repository
-2. Build and pack the package:
-
-```bash
-npm install
-npm run pack-local
+```
+Error: Expected 'from', got 'typeof'
 ```
 
-3. This will create a file like `expo-crypto-universal-0.2.2.tgz`
-4. In your test project, install the local package:
+To resolve this, add the following mock to your test file:
 
-```bash
-npm install /path/to/expo-crypto-universal-0.2.2.tgz
+```typescript
+import { vi } from 'vitest';
+
+// Mock expo-crypto
+vi.mock('expo-crypto', () => ({}));
 ```
+
+This mock is necessary because `expo-crypto-universal` has `expo-crypto` as a peer dependency.
 
 ## License
 
