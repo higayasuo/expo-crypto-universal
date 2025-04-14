@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.4] - 2025-04-15
+
+### Added
+
+- Added `isWeb` utility function to exports
+
 ## [0.2.3] - 2025-04-15
 
 ### Changed
@@ -50,11 +56,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Universal crypto interface for Expo (iOS, Android, Web)
 - Platform-agnostic crypto operations interface
 - Core crypto operations:
+  - `getRandomValues`: Fill Uint8Array with cryptographically secure random values
   - `getRandomBytes`: Generate cryptographically secure random bytes
-  - `sha256Async`: Generate SHA-256 hash (base64 encoded)
-  - `aesEncryptAsync`: AES encryption with IV
-  - `aesDecryptAsync`: AES decryption with IV verification
+  - `sha256Async`: Compute SHA-256 hash
+  - `sha384Async`: Compute SHA-384 hash
+  - `sha512Async`: Compute SHA-512 hash
+  - `sha2Async`: Generic SHA-2 hash computation (256, 384, or 512 bits)
 - TypeScript support
 - Comprehensive test suite
-- Utility functions:
-  - `compareUint8Arrays`: Compare Uint8Arrays for equality
+- Platform-specific implementations:
+  - Web: Using Web Crypto API
+  - Native: Using Expo's native crypto implementation
+- Automatic platform detection
