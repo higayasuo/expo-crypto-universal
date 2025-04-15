@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.6] - 2025-04-15
+
+### Changed
+
+- Separated Web and Native implementations into separate packages:
+  - `expo-crypto-universal-web` for web platform
+  - `expo-crypto-universal-native` for native platforms
+- Removed direct dependency on `expo-crypto`
+- Simplified testing by removing the need for `expo-crypto` mocks
+- Updated documentation to reflect the new package structure
+
 ## [0.2.5] - 2025-04-15
 
 ### Changed

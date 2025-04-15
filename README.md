@@ -8,7 +8,8 @@ A universal crypto implementation for Expo that works across all platforms, incl
 - SHA-2 hashing (256, 384, 512 bits)
 - Secure random bytes generation
 - TypeScript support
-- Automatic platform detection and module selection
+- Platform detection utility
+- Separate implementations for Web and Native platforms
 
 ## Installation
 
@@ -18,23 +19,27 @@ npm install expo-crypto-universal
 # or
 yarn add expo-crypto-universal
 
-# Install required Expo module
-npx expo install expo-crypto
+# Install platform-specific implementation
+npm install expo-crypto-universal-web    # For web platform
+npm install expo-crypto-universal-native # For native platforms (iOS/Android)
 ```
 
 ### Dependencies
 
-This package requires the following peer dependencies:
+This package requires one of the following platform-specific implementations:
 
-- `expo-crypto`
+- `expo-crypto-universal-web` for web platform
+- `expo-crypto-universal-native` for native platforms (iOS/Android)
 
 ## Usage
 
 ```typescript
-import { getCryptoModule } from 'expo-crypto-universal';
+import { isWeb } from 'expo-crypto-universal';
+import { WebCryptoModule } from 'expo-crypto-universal-web';
+import { NativeCryptoModule } from 'expo-crypto-universal-native';
 
 // Get the appropriate crypto module for your platform
-const crypto = getCryptoModule();
+const crypto = isWeb() ? new WebCryptoModule() : new NativeCryptoModule();
 
 // Generate random bytes
 const randomBytes = crypto.getRandomBytes(32);
@@ -55,9 +60,9 @@ const hash = await crypto.sha2Async(256, data); // Same as sha256Async
 
 ## API
 
-### `getCryptoModule()`
+### `isWeb()`
 
-Returns the appropriate `CryptoModule` implementation based on the current platform.
+Returns `true` if the current environment is a web environment, `false` otherwise.
 
 ### `CryptoModule` Interface
 
@@ -100,29 +105,14 @@ Computes the SHA-2 hash of the input data with the specified number of bits (256
 
 ## Platform Support
 
-The package automatically selects the appropriate implementation based on the platform:
+The package provides platform-specific implementations:
 
-- Web: Uses the Web Crypto API
-- Native (iOS/Android): Uses Expo's native crypto implementation
+- Web: `expo-crypto-universal-web` using Web Crypto API
+- Native (iOS/Android): `expo-crypto-universal-native` using Expo's native crypto implementation
 
 ## Testing
 
-When testing with Vitest, you may encounter the following error:
-
-```
-Error: Expected 'from', got 'typeof'
-```
-
-To resolve this, add the following mock to your test file:
-
-```typescript
-import { vi } from 'vitest';
-
-// Mock expo-crypto
-vi.mock('expo-crypto', () => ({}));
-```
-
-This mock is necessary because `expo-crypto-universal` has `expo-crypto` as a peer dependency.
+The package is designed to work seamlessly with Vitest. No special configuration is required as the platform-specific implementations are now separate packages.
 
 ## License
 

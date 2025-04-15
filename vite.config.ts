@@ -11,14 +11,9 @@ export default defineConfig({
       formats: ['es', 'cjs'],
     },
     rollupOptions: {
-      external: ['expo-crypto'],
+      external: [],
       input: {
         main: resolve(__dirname, 'src/index.ts'),
-      },
-      output: {
-        globals: {
-          'expo-crypto': 'expoCrypto',
-        },
       },
     },
   },
