@@ -1,18 +1,17 @@
 {
   "name": "expo-crypto-universal",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Universal crypto implementation for Expo that works across all platforms including web",
   "private": false,
   "type": "module",
   "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "default": "./dist/index.js"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
     }
   },
   "files": [
@@ -41,9 +40,6 @@
   ],
   "author": "",
   "license": "MIT",
-  "dependencies": {
-    "base64-js": "^1.5.1"
-  },
   "devDependencies": {
     "@types/node": "^20.11.24",
     "typescript": "^5.2.2",

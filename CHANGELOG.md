@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.7] - 2025-04-16
+
+### Changed
+
+- Removed the `default` field from the `exports` section in package.json for simplification and clarity. Only `import`, `require`, and `types` are now specified.
+- Version bump to align with expo-crypto-universal-web and expo-crypto-universal-native after dependency cleanup in those packages.
+
 ## [0.2.6] - 2025-04-15
 
 ### Changed
