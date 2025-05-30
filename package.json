@@ -29,12 +29,13 @@
   "keywords": [
     "expo",
     "crypto",
+    "random",
+    "sha2",
+    "sha256",
+    "sha384",
+    "sha512",
     "web",
-    "universal",
-    "encryption",
-    "decryption",
-    "aes",
-    "hmac"
+    "universal"
   ],
   "author": "",
   "license": "MIT",
