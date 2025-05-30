@@ -83,9 +83,9 @@ interface CryptoModule {
 
 Fills the provided Uint8Array with cryptographically secure random values.
 
-### `getRandomBytes(size: number): Uint8Array`
+### `getRandomBytes(size: number | undefined): Uint8Array`
 
-Generates a new Uint8Array of specified size filled with cryptographically secure random bytes.
+Generates a new Uint8Array of specified size filled with cryptographically secure random bytes. If no size is specified, it defaults to 32 bytes.
 
 ### `sha256Async(data: Uint8Array): Promise<Uint8Array>`
 

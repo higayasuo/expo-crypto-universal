@@ -30,6 +30,12 @@ describe('AbstractCryptoModule', () => {
       expect(result).toBeInstanceOf(Uint8Array);
       expect(result.length).toBe(size);
     });
+
+    it('should generate 32 bytes when size is not specified', () => {
+      const result = crypto.getRandomBytes();
+      expect(result).toBeInstanceOf(Uint8Array);
+      expect(result.length).toBe(32);
+    });
   });
 
   describe('sha2Async', () => {

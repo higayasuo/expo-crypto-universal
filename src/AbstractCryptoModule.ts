@@ -7,10 +7,10 @@ import { CryptoModule } from './CryptoModule';
 export abstract class AbstractCryptoModule implements CryptoModule {
   /**
    * Generates random bytes of specified size.
-   * @param size - The number of random bytes to generate.
+   * @param size - The number of random bytes to generate. Defaults to 32 if not specified.
    * @returns Uint8Array containing random bytes.
    */
-  getRandomBytes(size: number): Uint8Array {
+  getRandomBytes(size = 32): Uint8Array {
     return this.getRandomValues(new Uint8Array(size));
   }
 

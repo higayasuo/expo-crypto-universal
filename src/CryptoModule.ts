@@ -10,10 +10,10 @@ export interface CryptoModule {
   getRandomValues(values: Uint8Array): Uint8Array;
   /**
    * Generates random bytes of specified size
-   * @param size - The number of random bytes to generate
+   * @param size - The number of random bytes to generate. Defaults to 32 if not specified
    * @returns Uint8Array containing random bytes
    */
-  getRandomBytes(size: number): Uint8Array;
+  getRandomBytes(size: number | undefined): Uint8Array;
 
   /**
    * Computes the SHA-256 hash of the given data asynchronously
