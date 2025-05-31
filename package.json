@@ -1,6 +1,6 @@
 {
   "name": "expo-crypto-universal",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "description": "Universal crypto implementation for Expo that works across all platforms including web",
   "private": false,
   "type": "module",
