@@ -1,6 +1,6 @@
 {
   "name": "expo-crypto-universal",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "description": "Universal crypto implementation for Expo that works across all platforms including web",
   "private": false,
   "type": "module",
@@ -37,8 +37,16 @@
     "web",
     "universal"
   ],
-  "author": "",
+  "author": "Yasuo Higa",
   "license": "MIT",
+  "homepage": "https://github.com/higayasuo/expo-crypto-universal#readme",
+  "bugs": {
+    "url": "https://github.com/higayasuo/expo-crypto-universal/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/higayasuo/expo-crypto-universal.git"
+  },
   "devDependencies": {
     "@types/node": "^20.11.24",
     "typescript": "^5.2.2",
